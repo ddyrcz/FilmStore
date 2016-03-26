@@ -20,6 +20,8 @@ namespace FilmStore
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string _apiKey = "469d646964e305889fe0cbc41689b037";
+
         List<string> _data = new List<string>
         {
             "data",
@@ -32,12 +34,32 @@ namespace FilmStore
         public MainWindow()
         {
             InitializeComponent();
-            filmList.ItemsSource = _data;
+            GetPopularFilms();
+            
         }
 
-        private void GetPopularFilms()
+        private async void GetPopularFilms()
         {
-            //IHttpGet<>
+            IHttpGet<Films> adapter = new HttpAdapter<Films>();
+
+            Films popularFilms = await adapter.Get(string.Format("3/movie/popular?api_key={0}", _apiKey));
+            // w MVVM mozna nie dawac awaita. Zdjecia sie beda pobierac w tle
+             IncludePosters(popularFilms);
+
+            filmList.ItemsSource = popularFilms.results.OrderByDescending(x => x.vote_average);
+        }
+
+        private async void IncludePosters(Films popularFilms)
+        {
+            if (popularFilms == null || popularFilms.results == null) return;
+
+            IImageDownload downloader = new ImageDownloader();
+
+            foreach (Film film in popularFilms.results)
+            {
+                byte[] bytes = await downloader.Download("t/p/w500" + film.poster_path);
+                film.Poster = Converter.FromBytesToBitmapImage(bytes);
+            }                        
         }
     }
 }

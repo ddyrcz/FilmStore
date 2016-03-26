@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FilmStore
 {
-    interface IHttpGet<T> where T : class
+    interface IImageDownload
     {
-        Task<T> Get(string request);
+        Task<byte[]> Download(string uri);
     }
 }

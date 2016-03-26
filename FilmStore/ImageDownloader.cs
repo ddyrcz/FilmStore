@@ -4,23 +4,21 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 namespace FilmStore
 {
-    class HttpAdapter<T> : IHttpGet<T> where T : class
+    class ImageDownloader : IImageDownload
     {
-        public async Task<T> Get(string request)
+        public async Task<byte[]> Download(string uri)
         {
-            T result = default(T);
-                                                      
+            byte[] bytes = default(byte[]);
+
             try
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://api.themoviedb.org");
-                    string jsonResult = await client.GetStringAsync(request);
-                    result = new JavaScriptSerializer().Deserialize<T>(jsonResult);
+                    client.BaseAddress = new Uri("http://image.tmdb.org");
+                    bytes = await client.GetByteArrayAsync(uri);
                 }
             }
             catch (Exception ex)
@@ -29,7 +27,7 @@ namespace FilmStore
                 Console.WriteLine("Message :{0} ", ex.Message);
             }
 
-            return result;
+            return bytes;
         }
     }
 }
