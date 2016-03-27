@@ -8,9 +8,9 @@ using System.Web.Script.Serialization;
 
 namespace FilmStore
 {
-    class HttpAdapter<T> : IHttpGet<T> where T : class
+    class HttpAdapter : IHttpGet
     {
-        public async Task<T> Get(string request)
+        public async Task<T> Get<T>(string request)
         {
             T result = default(T);
                                                       

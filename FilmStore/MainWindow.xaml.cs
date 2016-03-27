@@ -22,34 +22,24 @@ namespace FilmStore
     {
         private string _apiKey = "469d646964e305889fe0cbc41689b037";
 
-        List<string> _data = new List<string>
-        {
-            "data",
-            "data",
-            "data",
-            "data",
-            "data",
-        };        
-
         public MainWindow()
         {
             InitializeComponent();
             GetPopularFilms();
-            
         }
 
         private async void GetPopularFilms()
         {
-            IHttpGet<Films> adapter = new HttpAdapter<Films>();
+            IHttpGet adapter = new HttpAdapter();
 
-            Films popularFilms = await adapter.Get(string.Format("3/movie/popular?api_key={0}", _apiKey));
-            // w MVVM mozna nie dawac awaita. Zdjecia sie beda pobierac w tle
-             IncludePosters(popularFilms);
+            Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}", _apiKey));
+            // In MVVM patern would not be a await key 
+            await IncludePosters(popularFilms);
 
             filmList.ItemsSource = popularFilms.results.OrderByDescending(x => x.vote_average);
         }
 
-        private async void IncludePosters(Films popularFilms)
+        private async Task IncludePosters(Films popularFilms)
         {
             if (popularFilms == null || popularFilms.results == null) return;
 
@@ -59,7 +49,7 @@ namespace FilmStore
             {
                 byte[] bytes = await downloader.Download("t/p/w500" + film.poster_path);
                 film.Poster = Converter.FromBytesToBitmapImage(bytes);
-            }                        
+            }
         }
     }
 }
