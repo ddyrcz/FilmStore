@@ -17,8 +17,7 @@ namespace FilmStore
         public string title { get; set; }
         public string overview { get; set; }
         public double vote_average { get; set; }
-        public string poster_path { get; set; }
-        public BitmapImage Poster { get; set; }
+        public string poster_path { get; set; }        
         public DateTime release_date { get; set; }
         public string release_year { get { return "(" + release_date.Year + ")"; }  }
     }

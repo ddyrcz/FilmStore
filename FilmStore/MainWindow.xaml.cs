@@ -33,10 +33,14 @@ namespace FilmStore
             IHttpGet adapter = new HttpAdapter();
 
             Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}", _apiKey));
+            
+            // To cut download time
+            // popularFilms.results = popularFilms.results.Take(3).ToList();
+
             // In MVVM patern would not be a await key 
             await IncludePosters(popularFilms);
-
-            filmList.ItemsSource = popularFilms.results.OrderByDescending(x => x.vote_average);
+            
+            // filmList.ItemsSource = popularFilms.results.OrderByDescending(x => x.vote_average);
         }
 
         private async Task IncludePosters(Films popularFilms)
@@ -44,12 +48,14 @@ namespace FilmStore
             if (popularFilms == null || popularFilms.results == null) return;
 
             IImageDownload downloader = new ImageDownloader();
+            var imagePreparer = new ImagePreparer();
 
             foreach (Film film in popularFilms.results)
-            {
+            {                                
                 byte[] bytes = await downloader.Download("t/p/w500" + film.poster_path);
-                film.Poster = Converter.FromBytesToBitmapImage(bytes);
-            }
+                Image img = imagePreparer.Prepare(Converter.FromBytesToBitmapImage(bytes));
+                images.Children.Add(img);
+            }            
         }
     }
 }

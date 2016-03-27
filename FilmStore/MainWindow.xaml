@@ -5,8 +5,7 @@
         xmlns:local="clr-namespace:FilmStore"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="MainWindow"
-        Width="1500"
-        Height="1050"
+        WindowState="Maximized"
         mc:Ignorable="d">
 
     <Window.Resources>
@@ -72,15 +71,29 @@
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Center"
-                   FontSize="42"
-                   Foreground="White"
-                   Text="The most popular films!" />
-        <ListBox x:Name="filmList"
-                 Grid.Row="1"
-                 HorizontalAlignment="Center"
-                 VerticalAlignment="Top"
-                 Background="#333333"
-                 ItemTemplate="{StaticResource filmItemTemplate}" />
+
+        <Border MinHeight="100"
+                Margin="100, 15, 100 ,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Background="#555555"
+                CornerRadius="15">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="72"
+                       FontStyle="Italic"
+                       Text="Top Films" />
+        </Border>
+
+        <Border Grid.Row="1"
+                Margin="100, 15"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="#555555"
+                CornerRadius="15">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <WrapPanel x:Name="images" Orientation="Horizontal" />
+            </ScrollViewer>
+        </Border>
     </Grid>
 </Window>
