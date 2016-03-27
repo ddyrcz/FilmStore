@@ -15,9 +15,10 @@ namespace FilmStore
         {
             var img = new Image();
 
-            img.Width = 250;
-            img.Height = 250;
-            img.Margin = new Thickness(0, 15, 0, 15);
+            img.Stretch = System.Windows.Media.Stretch.Fill;
+            img.Width = 180;
+            img.Height = 280;
+            //img.Margin = new Thickness(0, 15, 0, 15);
             img.Source = obj;
 
             return img;
