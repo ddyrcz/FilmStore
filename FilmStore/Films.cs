@@ -20,5 +20,6 @@ namespace FilmStore
         public string poster_path { get; set; }        
         public DateTime release_date { get; set; }
         public string release_year { get { return "(" + release_date.Year + ")"; }  }
+        public string profile_path { get; set; }
     }
 }

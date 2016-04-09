@@ -17,8 +17,8 @@ namespace FilmStore
 
             img.Stretch = System.Windows.Media.Stretch.Fill;
             img.Width = 180;
-            img.Height = 280;
-            //img.Margin = new Thickness(0, 15, 0, 15);
+            img.Height = 280;            
+            img.Margin = new Thickness(3);
             img.Source = obj;
 
             return img;

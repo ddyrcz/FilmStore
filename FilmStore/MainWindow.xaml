@@ -66,21 +66,22 @@
         </DataTemplate>
     </Window.Resources>
 
-    <Grid Background="#222222">
+    <Grid Background="#111111">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Border MinHeight="100"
+        <Border 
                 Margin="100, 15, 100 ,0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
-                Background="#555555"
+                Background="#111111"
                 CornerRadius="15">
             <TextBlock HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       FontSize="72"
+                       FontSize="38"
+                       Foreground="White"
                        FontStyle="Italic"
                        Text="Top Films" />
         </Border>
@@ -89,7 +90,7 @@
                 Margin="100, 15"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                Background="#555555"
+                Background="#111111"
                 CornerRadius="15">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <WrapPanel x:Name="images" Orientation="Horizontal" />

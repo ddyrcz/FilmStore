@@ -31,22 +31,14 @@ namespace FilmStore
         private async void GetPopularFilms()
         {
             IHttpGet adapter = new HttpAdapter();
-
-            Films popularFilms = null;
-
-            //Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}", _apiKey));
+            
+            Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}", _apiKey));
 
             //// To cut download time
             //// popularFilms.results = popularFilms.results.Take(3).ToList();
 
-            //// In MVVM patern would not be a await key 
-            //await IncludePosters(popularFilms);
-
-            for (int i = 1; i <= 5; i++)
-            {
-                popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}&page={1}", _apiKey, i));
-                await IncludePosters(popularFilms);
-            }
+            // In MVVM patern would not be a await key 
+            await IncludePosters(popularFilms);            
 
             
         }
