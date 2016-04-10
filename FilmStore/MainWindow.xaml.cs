@@ -24,7 +24,7 @@ namespace FilmStore
 
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
             GetPopularFilms();
         }
 
@@ -33,29 +33,61 @@ namespace FilmStore
             IHttpGet adapter = new HttpAdapter();
             
             Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}", _apiKey));
-
-            //// To cut download time
-            //// popularFilms.results = popularFilms.results.Take(3).ToList();
-
-            // In MVVM patern would not be a await key 
-            await IncludePosters(popularFilms);            
-
             
+            // In MVVM patern would not be a await key 
+            await IncludePosters(popularFilms);                        
+        }
+
+        private async void GetRecentFilms()
+        {
+            IHttpGet adapter = new HttpAdapter();
+
+            Films recentFilms = await adapter.Get<Films>(string.Format("3/movie/now_playing?api_key={0}", _apiKey));
+            
+            // In MVVM patern would not be a await key 
+            await IncludePosters(recentFilms);
         }
 
         private async Task IncludePosters(Films popularFilms)
         {
             if (popularFilms == null || popularFilms.results == null) return;
+            
+            IUIObjectPrepareWithParameter<Image, Film> imagePreparer = new ImagePreparer();
 
-            IImageDownload downloader = new ImageDownloader();
-            var imagePreparer = new ImagePreparer();
+            images.Children.Clear();
 
             foreach (Film film in popularFilms.results)
-            {                                
-                byte[] bytes = await downloader.Download("t/p/w500" + film.poster_path);
-                Image img = imagePreparer.Prepare(Converter.FromBytesToBitmapImage(bytes));
+            {                                                
+                Image img = await imagePreparer.Prepare(film);                
+                img.MouseDown += Img_MouseDown;
                 images.Children.Add(img);
             }            
+        }
+
+        private void Img_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(sender is Image && ((Image)sender).Tag is Film)
+            {
+                Film film = ((Film)((Image)sender).Tag);                
+                image.Source = ((Image)sender).Source;
+                title.Text = film.title_with_release_date;
+                description.Text = film.overview;
+                rate.Text = film.vote_average.ToString();
+            }
+        }
+
+        private void topFilmsTab_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            topFilmUnderLine.Visibility = Visibility.Visible;
+            recentFilmUnderLine.Visibility = Visibility.Collapsed;
+            GetPopularFilms();
+        }
+
+        private void recentFilmsTab_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            topFilmUnderLine.Visibility = Visibility.Collapsed;
+            recentFilmUnderLine.Visibility = Visibility.Visible;
+            GetRecentFilms();
         }
     }
 }

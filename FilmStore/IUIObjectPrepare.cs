@@ -11,6 +11,6 @@ namespace FilmStore
         where T : class
         where W : class
     {
-        T Prepare(W obj);
+        Task<T> Prepare(W obj);
     }
 }

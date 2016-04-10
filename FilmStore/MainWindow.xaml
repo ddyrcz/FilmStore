@@ -8,93 +8,115 @@
         WindowState="Maximized"
         mc:Ignorable="d">
 
-    <Window.Resources>
-        <DataTemplate x:Key="filmItemTemplate">
-            <Border Background="#333333"
-                    BorderBrush="White"
-                    BorderThickness="1"
-                    Padding="5">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="800" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Image Grid.RowSpan="2"
-                           Width="230"
-                           Height="230"
-                           Source="{Binding Path=Poster}" />
-
-                    <TextBlock Grid.Column="1"
-                               FontSize="32"
-                               Foreground="White">
-
-                        <Run Text="{Binding Path=title}" />
-                        <Run Text="{Binding Path=release_year, Mode=OneWay}" />
-                    </TextBlock>
-                    <Grid Grid.RowSpan="2"
-                          Grid.Column="2"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center">
-                        <Ellipse Width="150"
-                                 Height="150"
-                                 Fill="#454545" />
-                        <TextBlock HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="42"
-                                   Foreground="White"
-                                   Text="{Binding Path=vote_average}" />
-                    </Grid>
-                    <TextBox Grid.Row="1"
-                             Grid.Column="1"
-                             Margin="0,20,0,0"
-                             VerticalAlignment="Top"
-                             AcceptsReturn="True"
-                             Background="#333333"
-                             BorderThickness="0"
-                             FontSize="12"
-                             Foreground="White"
-                             Text="{Binding Path=overview}"
-                             TextWrapping="Wrap" />
-
-                </Grid>
-            </Border>
-        </DataTemplate>
-    </Window.Resources>
-
     <Grid Background="#111111">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <!--  Details  -->
             <RowDefinition />
+            <!--  Tab control  -->
+            <RowDefinition Height="Auto" />
+            <!--  Films scroller  -->
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border 
-                Margin="100, 15, 100 ,0"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center"
-                Background="#111111"
-                CornerRadius="15">
-            <TextBlock HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="38"
-                       Foreground="White"
-                       FontStyle="Italic"
-                       Text="Top Films" />
-        </Border>
+        <Grid Margin="280,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="1"
-                Margin="100, 15"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="#111111"
-                CornerRadius="15">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <WrapPanel x:Name="images" Orientation="Horizontal" />
-            </ScrollViewer>
-        </Border>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!--  Focused film poster  -->
+            <Image x:Name="image"
+                   Grid.RowSpan="3"
+                   Margin="10"
+                   Source="C:\Poster.png" />
+
+            <!--  Focused film title  -->
+            <TextBox x:Name="title"
+                     Grid.Column="1"
+                     Margin="10"
+                     AcceptsReturn="True"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     FontSize="42"
+                     Foreground="White"
+                     Text="Intersteller (2012)"
+                     TextWrapping="Wrap" />
+
+            <!--  Focused film description  -->
+            <TextBox x:Name="description"
+                     Grid.Row="1"
+                     Grid.Column="1"
+                     Margin="10"
+                     AcceptsReturn="True"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Foreground="White"
+                     Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in mi tortor. Proin ornare tortor sapien, placerat tempus magna interdum vitae. Aenean id nisi ut velit viverra imperdiet. Mauris ut aliquam neque. In sit amet erat lacus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum nisl sapien, iaculis eu nunc id, molestie placerat massa."
+                     TextWrapping="Wrap" />
+
+            <!--  Focused film points  -->
+            <Grid Grid.Row="2"
+                  Grid.Column="1"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <Ellipse Width="70"
+                         Height="55"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Fill="Yellow" />
+                <TextBlock x:Name="rate"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="24"
+                           FontStyle="Italic"
+                           FontWeight="Bold"
+                           Foreground="Black"
+                           Text="7,7" />
+            </Grid>
+
+        </Grid>
+
+        <!--  Type of films  -->
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+            <StackPanel Margin="10" Orientation="Vertical">
+                <TextBlock Name="topFilmsTab"
+                           Margin="3"
+                           Foreground="White"
+                           MouseDown="topFilmsTab_MouseDown"
+                           Text="Top films" />
+
+                <Border Name="topFilmUnderLine"
+                        Height="3"
+                        Background="DarkRed" />
+            </StackPanel>
+            <StackPanel Margin="10">
+                <TextBlock Name="recentFilmsTab"
+                           Margin="3"
+                           Foreground="White"
+                           MouseDown="recentFilmsTab_MouseDown"
+                           Text="Recent films" />
+
+                <Border Name="recentFilmUnderLine"
+                        Height="3"
+                        Background="DarkRed"
+                        Visibility="Collapsed" />
+            </StackPanel>
+        </StackPanel>
+
+        <!--  Film posters  -->
+        <ScrollViewer Grid.Row="2"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Name="images" Orientation="Horizontal" />
+        </ScrollViewer>
+
     </Grid>
 </Window>
