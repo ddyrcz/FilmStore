@@ -29,51 +29,59 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
 
             <!--  Focused film poster  -->
             <Image x:Name="image"
-                   Grid.RowSpan="3"
+                   Grid.RowSpan="2"
                    Margin="10" />
 
-            <!--  Focused film title  -->
-            <TextBox x:Name="title"
-                     Grid.Column="1"
-                     Margin="10"
-                     AcceptsReturn="True"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     FontSize="42"
-                     Foreground="White"
-                     TextWrapping="Wrap" />
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-            <!--  Focused film description  -->
-            <TextBox x:Name="description"
-                     Grid.Row="1"
-                     Grid.Column="1"
-                     Margin="10"
-                     AcceptsReturn="True"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Foreground="White"
-                     TextWrapping="Wrap" />
+                <!--  Focused film title  -->
+                <TextBox x:Name="title"
+                         Margin="10"
+                         AcceptsReturn="True"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontFamily="Calibri Bold"
+                         FontSize="42"
+                         Foreground="White"
+                         TextWrapping="Wrap" />
+
+                <!--  Focused film description  -->
+                <TextBox x:Name="description"
+                         Grid.Row="1"
+                         Margin="10"
+                         AcceptsReturn="True"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontFamily="Calibri Bold"
+                         FontSize="14"
+                         Foreground="White"
+                         TextWrapping="Wrap" />
+            </Grid>
 
             <!--  Focused film points  -->
-            <Grid Grid.Row="2"
+            <Grid Grid.Row="1"
                   Grid.Column="1"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
                 <Image Width="140"
-                         Height="140"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         Source="C:\yellow-star.png" />
+                       Height="140"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="C:\yellow-star.png" />
                 <TextBlock x:Name="rate"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
+                           FontFamily="Calibri Bold"
                            FontSize="24"
                            FontStyle="Italic"
                            FontWeight="Bold"
@@ -84,6 +92,7 @@
         <TextBlock x:Name="noDetails"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
+                   FontFamily="Calibri Bold"
                    FontSize="72"
                    Foreground="White"
                    Text="Click some poster to get details!" />

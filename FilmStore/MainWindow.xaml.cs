@@ -23,6 +23,7 @@ namespace FilmStore
         private string _apiKey = "469d646964e305889fe0cbc41689b037";
         private List<Image> _popularFilmPosters = new List<Image>();
         private List<Image> _recentFilmPosters = new List<Image>();
+        private int _pageCount = 5;
 
         public MainWindow()
         {
@@ -50,22 +51,28 @@ namespace FilmStore
 
         private async void DownloadPopularFilms()
         {
-            IHttpGet adapter = new HttpAdapter();
+            IHttpGet adapter = new HttpAdapter();            
 
-            Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}", _apiKey));
+            for (int page = 1; page <= _pageCount; page++)
+            {
+                Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}&page={1}", _apiKey, page));
 
-            // In MVVM patern would not be a await key 
-            await IncludePosters(popularFilms, _popularFilmPosters);
+                // In MVVM patern would not be a await key 
+                await IncludePosters(popularFilms, _popularFilmPosters);
+            }           
         }
 
         private async void DownloadRecentFilms()
         {
             IHttpGet adapter = new HttpAdapter();
 
-            Films recentFilms = await adapter.Get<Films>(string.Format("3/movie/now_playing?api_key={0}", _apiKey));
+            for (int page = 1; page <= _pageCount; page++)
+            {
+                Films recentFilms = await adapter.Get<Films>(string.Format("3/movie/now_playing?api_key={0}&page={1}", _apiKey, page));
 
-            // In MVVM patern would not be a await key 
-            await IncludePosters(recentFilms, _recentFilmPosters);
+                // In MVVM patern would not be a await key 
+                await IncludePosters(recentFilms, _recentFilmPosters);
+            }
         }        
 
         private bool IsFilmDataDownloaded(List<Image> posterList)
@@ -91,7 +98,10 @@ namespace FilmStore
 
             IUIObjectPrepareWithParameter<Image, Film> imagePreparer = new ImagePreparer();
 
-            images.Children.Clear();
+            if (FirstDownloadingPage(posterList))
+            {
+                images.Children.Clear();
+            }
 
             foreach (Film film in films.results)
             {
@@ -100,6 +110,11 @@ namespace FilmStore
                 img.MouseDown += Img_MouseDown;
                 images.Children.Add(img);
             }
+        }
+
+        private bool FirstDownloadingPage(List<Image> posterList)
+        {
+            return posterList == null || !posterList.Any();
         }
 
         private void Img_MouseDown(object sender, MouseButtonEventArgs e)
