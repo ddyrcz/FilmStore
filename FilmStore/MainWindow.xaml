@@ -5,7 +5,9 @@
         xmlns:local="clr-namespace:FilmStore"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="MainWindow"
+        KeyDown="Window_KeyDown"
         WindowState="Maximized"
+        WindowStyle="None"
         mc:Ignorable="d">
 
     <Grid Background="#111111">
@@ -18,7 +20,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Margin="280,0">
+        <Grid x:Name="details"
+              Margin="280,0"
+              Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition />
@@ -33,8 +37,7 @@
             <!--  Focused film poster  -->
             <Image x:Name="image"
                    Grid.RowSpan="3"
-                   Margin="10"
-                   Source="C:\Poster.png" />
+                   Margin="10" />
 
             <!--  Focused film title  -->
             <TextBox x:Name="title"
@@ -45,7 +48,6 @@
                      BorderThickness="0"
                      FontSize="42"
                      Foreground="White"
-                     Text="Intersteller (2012)"
                      TextWrapping="Wrap" />
 
             <!--  Focused film description  -->
@@ -57,7 +59,6 @@
                      Background="Transparent"
                      BorderThickness="0"
                      Foreground="White"
-                     Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in mi tortor. Proin ornare tortor sapien, placerat tempus magna interdum vitae. Aenean id nisi ut velit viverra imperdiet. Mauris ut aliquam neque. In sit amet erat lacus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum nisl sapien, iaculis eu nunc id, molestie placerat massa."
                      TextWrapping="Wrap" />
 
             <!--  Focused film points  -->
@@ -65,22 +66,27 @@
                   Grid.Column="1"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
-                <Ellipse Width="70"
-                         Height="55"
+                <Image Width="140"
+                         Height="140"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
-                         Fill="Yellow" />
+                         Source="C:\yellow-star.png" />
                 <TextBlock x:Name="rate"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            FontSize="24"
                            FontStyle="Italic"
                            FontWeight="Bold"
-                           Foreground="Black"
-                           Text="7,7" />
+                           Foreground="Black" />
             </Grid>
 
         </Grid>
+        <TextBlock x:Name="noDetails"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="72"
+                   Foreground="White"
+                   Text="Click some poster to get details!" />
 
         <!--  Type of films  -->
         <StackPanel Grid.Row="1"
