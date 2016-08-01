@@ -183,7 +183,7 @@
                        Height="140"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Source="C:\yellow-star.png" />
+                       Source="Resources/yellow-star.png" />
                 <TextBlock x:Name="rate"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"

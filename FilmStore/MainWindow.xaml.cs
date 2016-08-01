@@ -23,7 +23,7 @@ namespace FilmStore
         private string _apiKey = "469d646964e305889fe0cbc41689b037";
         private List<Image> _popularFilmPosters = new List<Image>();
         private List<Image> _recentFilmPosters = new List<Image>();
-        private int _pageCount = 5;
+        private int _pageCount = 1;
 
         public MainWindow()
         {
@@ -98,10 +98,10 @@ namespace FilmStore
 
             IUIObjectPrepareWithParameter<Image, Film> imagePreparer = new ImagePreparer();
 
-            if (FirstDownloadingPage(posterList))
-            {
-                images.Children.Clear();
-            }
+            //if (FirstDownloadingPage(posterList))
+            //{
+            //    images.Children.Clear();
+            //}
 
             foreach (Film film in films.results)
             {
