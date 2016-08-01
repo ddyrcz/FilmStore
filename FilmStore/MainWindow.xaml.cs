@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FilmStore
 {
@@ -19,16 +11,53 @@ namespace FilmStore
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {        
+    {
         private string _apiKey = "469d646964e305889fe0cbc41689b037";
+        private int _pageCount = 1;
         private List<Image> _popularFilmPosters = new List<Image>();
         private List<Image> _recentFilmPosters = new List<Image>();
-        private int _pageCount = 1;
 
         public MainWindow()
         {
             InitializeComponent();
             GetPopularFilms();
+        }
+
+        private void BindDownloadedPosters(List<Image> posters)
+        {
+            images.Children.Clear();
+            posters.ForEach(x => images.Children.Add(x));
+        }
+
+        private async void DownloadPopularFilms()
+        {
+            IHttpGet adapter = new HttpAdapter();
+
+            for (int page = 1; page <= _pageCount; page++)
+            {
+                Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}&page={1}", _apiKey, page));
+
+                // In MVVM patern would not be a await key
+                await IncludePosters(popularFilms, _popularFilmPosters);
+            }
+        }
+
+        private async void DownloadRecentFilms()
+        {
+            IHttpGet adapter = new HttpAdapter();
+
+            for (int page = 1; page <= _pageCount; page++)
+            {
+                Films recentFilms = await adapter.Get<Films>(string.Format("3/movie/now_playing?api_key={0}&page={1}", _apiKey, page));
+
+                // In MVVM patern would not be a await key
+                await IncludePosters(recentFilms, _recentFilmPosters);
+            }
+        }
+
+        private bool FirstDownloadingPage(List<Image> posterList)
+        {
+            return posterList == null || !posterList.Any();
         }
 
         private void GetPopularFilms()
@@ -43,43 +72,6 @@ namespace FilmStore
             }
         }
 
-        private void BindDownloadedPosters(List<Image> posters)
-        {
-            images.Children.Clear();
-            posters.ForEach(x => images.Children.Add(x));
-        }
-
-        private async void DownloadPopularFilms()
-        {
-            IHttpGet adapter = new HttpAdapter();            
-
-            for (int page = 1; page <= _pageCount; page++)
-            {
-                Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}&page={1}", _apiKey, page));
-
-                // In MVVM patern would not be a await key 
-                await IncludePosters(popularFilms, _popularFilmPosters);
-            }           
-        }
-
-        private async void DownloadRecentFilms()
-        {
-            IHttpGet adapter = new HttpAdapter();
-
-            for (int page = 1; page <= _pageCount; page++)
-            {
-                Films recentFilms = await adapter.Get<Films>(string.Format("3/movie/now_playing?api_key={0}&page={1}", _apiKey, page));
-
-                // In MVVM patern would not be a await key 
-                await IncludePosters(recentFilms, _recentFilmPosters);
-            }
-        }        
-
-        private bool IsFilmDataDownloaded(List<Image> posterList)
-        {
-            return posterList != null && posterList.Any();
-        }
-
         private void GetRecentFilms()
         {
             if (IsFilmDataDownloaded(_recentFilmPosters))
@@ -89,6 +81,21 @@ namespace FilmStore
             else
             {
                 DownloadRecentFilms();
+            }
+        }
+
+        private void Img_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            noDetails.Visibility = Visibility.Collapsed;
+            details.Visibility = Visibility.Visible;
+
+            if (sender is Image && ((Image)sender).Tag is Film)
+            {
+                Film film = ((Film)((Image)sender).Tag);
+                image.Source = ((Image)sender).Source;
+                title.Text = film.title_with_release_date;
+                description.Text = film.overview;
+                rate.Text = film.vote_average.ToString();
             }
         }
 
@@ -112,31 +119,9 @@ namespace FilmStore
             }
         }
 
-        private bool FirstDownloadingPage(List<Image> posterList)
+        private bool IsFilmDataDownloaded(List<Image> posterList)
         {
-            return posterList == null || !posterList.Any();
-        }
-
-        private void Img_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            noDetails.Visibility = Visibility.Collapsed;
-            details.Visibility = Visibility.Visible;                       
-
-            if (sender is Image && ((Image)sender).Tag is Film)
-            {
-                Film film = ((Film)((Image)sender).Tag);
-                image.Source = ((Image)sender).Source;
-                title.Text = film.title_with_release_date;
-                description.Text = film.overview;
-                rate.Text = film.vote_average.ToString();
-            }
-        }
-
-        private void topFilmsTab_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            topFilmUnderLine.Visibility = Visibility.Visible;
-            recentFilmUnderLine.Visibility = Visibility.Collapsed;
-            GetPopularFilms();
+            return posterList != null && posterList.Any();
         }
 
         private void recentFilmsTab_MouseDown(object sender, MouseButtonEventArgs e)
@@ -144,6 +129,13 @@ namespace FilmStore
             topFilmUnderLine.Visibility = Visibility.Collapsed;
             recentFilmUnderLine.Visibility = Visibility.Visible;
             GetRecentFilms();
+        }
+
+        private void topFilmsTab_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            topFilmUnderLine.Visibility = Visibility.Visible;
+            recentFilmUnderLine.Visibility = Visibility.Collapsed;
+            GetPopularFilms();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
