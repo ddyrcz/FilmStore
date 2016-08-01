@@ -31,9 +31,8 @@ namespace FilmStore
             for (int page = 1; page <= _pageCount; page++)
             {
                 Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}&page={1}", _apiKey, page));
-
-                // In MVVM pattern would not be a await key
-                await IncludePosters(popularFilms, _popularFilmPosters, popularImages);
+                
+                IncludePosters(popularFilms, _popularFilmPosters, popularImages);
             }
         }
 
@@ -44,9 +43,8 @@ namespace FilmStore
             for (int page = 1; page <= _pageCount; page++)
             {
                 Films recentFilms = await adapter.Get<Films>(string.Format("3/movie/now_playing?api_key={0}&page={1}", _apiKey, page));
-
-                // In MVVM pattern would not be a await key
-                await IncludePosters(recentFilms, _recentFilmPosters, recentImages);
+                
+                IncludePosters(recentFilms, _recentFilmPosters, recentImages);
             }
         }
 
