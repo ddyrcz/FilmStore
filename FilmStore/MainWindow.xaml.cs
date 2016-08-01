@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,18 +14,14 @@ namespace FilmStore
         private string _apiKey = "469d646964e305889fe0cbc41689b037";
         private int _pageCount = 1;
         private List<Image> _popularFilmPosters = new List<Image>();
+        private bool _popularFilmsDownloadingStarted;
         private List<Image> _recentFilmPosters = new List<Image>();
+        private bool _recentFilmsDownloadingStarted;
 
         public MainWindow()
         {
             InitializeComponent();
             GetPopularFilms();
-        }
-
-        private void BindDownloadedPosters(List<Image> posters)
-        {
-            images.Children.Clear();
-            posters.ForEach(x => images.Children.Add(x));
         }
 
         private async void DownloadPopularFilms()
@@ -37,8 +32,8 @@ namespace FilmStore
             {
                 Films popularFilms = await adapter.Get<Films>(string.Format("3/movie/popular?api_key={0}&page={1}", _apiKey, page));
 
-                // In MVVM patern would not be a await key
-                await IncludePosters(popularFilms, _popularFilmPosters);
+                // In MVVM pattern would not be a await key
+                await IncludePosters(popularFilms, _popularFilmPosters, popularImages);
             }
         }
 
@@ -50,23 +45,14 @@ namespace FilmStore
             {
                 Films recentFilms = await adapter.Get<Films>(string.Format("3/movie/now_playing?api_key={0}&page={1}", _apiKey, page));
 
-                // In MVVM patern would not be a await key
-                await IncludePosters(recentFilms, _recentFilmPosters);
+                // In MVVM pattern would not be a await key
+                await IncludePosters(recentFilms, _recentFilmPosters, recentImages);
             }
-        }
-
-        private bool FirstDownloadingPage(List<Image> posterList)
-        {
-            return posterList == null || !posterList.Any();
         }
 
         private void GetPopularFilms()
         {
-            if (IsFilmDataDownloaded(_popularFilmPosters))
-            {
-                BindDownloadedPosters(_popularFilmPosters);
-            }
-            else
+            if (!PopularFilmsDownloadingStarted())
             {
                 DownloadPopularFilms();
             }
@@ -74,11 +60,7 @@ namespace FilmStore
 
         private void GetRecentFilms()
         {
-            if (IsFilmDataDownloaded(_recentFilmPosters))
-            {
-                BindDownloadedPosters(_recentFilmPosters);
-            }
-            else
+            if (!RecentFilmsDownloadingStarted())
             {
                 DownloadRecentFilms();
             }
@@ -99,33 +81,47 @@ namespace FilmStore
             }
         }
 
-        private async Task IncludePosters(Films films, List<Image> posterList)
+        private async Task IncludePosters(Films films, List<Image> posterList, StackPanel imagesWrapper)
         {
             if (films == null || films.results == null) return;
 
             IUIObjectPrepareWithParameter<Image, Film> imagePreparer = new ImagePreparer();
-
-            //if (FirstDownloadingPage(posterList))
-            //{
-            //    images.Children.Clear();
-            //}
 
             foreach (Film film in films.results)
             {
                 Image img = await imagePreparer.Prepare(film);
                 posterList.Add(img);
                 img.MouseDown += Img_MouseDown;
-                images.Children.Add(img);
+                imagesWrapper.Children.Add(img);
             }
         }
 
-        private bool IsFilmDataDownloaded(List<Image> posterList)
+        private bool PopularFilmsDownloadingStarted()
         {
-            return posterList != null && posterList.Any();
+            if (!_popularFilmsDownloadingStarted)
+            {
+                _popularFilmsDownloadingStarted = true;
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool RecentFilmsDownloadingStarted()
+        {
+            if (!_recentFilmsDownloadingStarted)
+            {
+                _recentFilmsDownloadingStarted = true;
+                return false;
+            }
+
+            return true;
         }
 
         private void recentFilmsTab_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            popularImages.Visibility = Visibility.Collapsed;
+            recentImages.Visibility = Visibility.Visible;
             topFilmUnderLine.Visibility = Visibility.Collapsed;
             recentFilmUnderLine.Visibility = Visibility.Visible;
             GetRecentFilms();
@@ -133,6 +129,8 @@ namespace FilmStore
 
         private void topFilmsTab_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            recentImages.Visibility = Visibility.Collapsed;
+            popularImages.Visibility = Visibility.Visible;
             topFilmUnderLine.Visibility = Visibility.Visible;
             recentFilmUnderLine.Visibility = Visibility.Collapsed;
             GetPopularFilms();

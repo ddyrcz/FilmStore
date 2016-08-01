@@ -237,7 +237,12 @@
                       MinHeight="220"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel Name="images" Orientation="Horizontal" />
+            <Grid>
+                <StackPanel Name="popularImages" Orientation="Horizontal" />
+                <StackPanel Name="recentImages"
+                            Orientation="Horizontal"
+                            Visibility="Collapsed" />
+            </Grid>
         </ScrollViewer>
 
     </Grid>
